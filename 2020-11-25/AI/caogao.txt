@@ -1,0 +1,121 @@
+import javax.microedition.lcdui.*;
+import javax.microedition.midlet.*;
+import java.io.*;
+
+public class AI extends MIDlet {
+	Display display;
+	MainCanvas mc;
+	public AI() {
+		display = Display.getDisplay(this);
+		mc = new MainCanvas();
+		display.setCurrent(mc);
+	}
+	public void startApp() {
+	}
+	public void destroyApp(boolean unc) {
+	}
+	public void pauseApp() {
+	}
+}
+class MainCanvas extends Canvas {
+	Image currentImg;
+	int heroX, heroY,bossX,bossY;
+    int flag;
+    int oldDirction=-1;
+    int currentDirction;
+    Image HeroImageFour[][] =new Image[4][3];//4:四个方向。3：每个方向3个图片。
+	public MainCanvas() {
+		try {
+			heroX = 120;
+			heroY = 100;
+			flag=0;
+			for (int i = 0; i < HeroImageFour.length; i++) {//i=0,Up/i=1,Down/i=2,Left/i=3,Right
+                for(int j=0;j<HeroImageFour[i].length;j++)
+				HeroImageFour[i][j] = Image.createImage("/sayo" + i+j + ".png");
+			}
+			currentImg = HeroImageFour[2][1];
+		} catch (IOException e) {
+			e.printStackTrace();
+
+		}
+	}
+	public void paint(Graphics g) {
+		g.setColor(30, 100, 255);
+		g.fillRect(0, 0, getWidth(), getHeight());
+		g.drawImage(currentImg, heroX, heroY, 0);
+	}
+	public void run(){
+		while(true){
+			
+		}
+	}
+	public void keyPressed(int keyCode) {		
+        int action = getGameAction(keyCode);// UP,DOWN,LEFT,RIGHT
+
+        if(oldDirction==-1){
+            oldDirction=getGameAction(keyCode);
+        }
+        currentDirction=getGameAction(keyCode);
+        if(oldDirction==currentDirction){//因为方向相同，所以仅仅进行转身
+            HeroAterImage(currentDirction);//四个方向转身
+        }else{
+            switch (currentDirction) {
+                case UP:
+                    HeroMove( 0);
+                    heroY -= 4;
+                    break;
+                case DOWN:
+                    HeroMove(1);
+                    heroY += 4;
+                    break;
+                case LEFT:
+                    HeroMove(2);
+                    heroX -= 4;
+                    break;
+                case RIGHT:
+                    HeroMove(3);
+                    heroX += 4;
+                    break;
+            }
+            //移动和图片切换
+        }
+
+
+        repaint();
+        oldDirction=currentDirction;
+	
+	}
+	public void HeroMove(int action ) {
+		if (flag == 0) {
+			currentImg = HeroImageFour[action][1];
+			flag = 1;
+		} else if (flag == 1) {
+			currentImg = HeroImageFour[action][0];
+			flag = 2;
+		} else if (flag == 2) {
+			currentImg = HeroImageFour[action][1];
+			flag = 3;
+		} else if (flag == 3) {
+			currentImg = HeroImageFour[action][2];
+			flag = 0;
+		}
+    }
+    public  void HeroAterImage(int dirction){
+        switch (dirction) {
+            case UP:
+            currentImg = HeroImageFour[dirction][1];
+                break;
+            case DOWN:
+            currentImg = HeroImageFour[dirction][1];
+                break;
+            case LEFT:
+            currentImg = HeroImageFour[dirction][1];
+                break;
+            case RIGHT:
+            currentImg = HeroImageFour[dirction][1];
+                break;
+        }
+        flag=0;
+    }
+
+}
